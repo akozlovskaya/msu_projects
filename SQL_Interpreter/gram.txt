@@ -1,0 +1,47 @@
+S -> lex_select SELECT | lex_insert INSERT | lex_update UPDATE | lex_delete DELETE | lex_create CREATE | lex_drop DROP
+                      
+SELECT -> lex_select FIELDS lex_from lex_name WHERE
+
+FIELDS -> lex_name { lex_comma lex_name } | lex_mul
+
+INSERT -> lex_insert lex_into lex_name lex_lp FV { lex_comma FV } lex_rp
+
+FV -> lex_str | LONG
+
+UPDATE -> lex_update lex_name lex_set lex_name lex_eq EXPR WHERE
+
+DELETE -> lex_delete lex_from lex_name WHERE
+
+CREATE -> lex_create lex_table lex_name lex_lp FD { lex_comma FD } lex_rp
+
+FD -> lex_name TYPE
+
+TYPE -> TEXT lex_lp lex_uns lex_rp | LONG
+
+DROP -> lex_drop lex_table lex_name
+
+WHERE —> lex_where WHERE1
+
+WHERE1 —> EXPR WHERE2 | lex_all
+
+WHERE2 —> [ lex_not ] lex_like lex_str | [ lex_not ] lex_in lex_lp  CONST lex_rp  | eps
+
+CONST —> lex_str { lex_comma lex_str } | LONG { lex_comma LONG }
+
+LONG -> [lex_min] lex_uns
+
+EXPR —> TERM { OP2 TERM }
+
+TERM —> MULT { OP1 MULT }
+
+MULT —> VALUE | lex_lp EXPR1 lex_rp | lex_not MULT
+
+EXPR1 —> EXPR { OP3 EXPR }
+
+VALUE —> lex_name | LONG | lex_str
+
+OP1 —> lex_mul | lex_div | lex_perc | lex_and
+
+OP2 —> lex_plus | lex_min | lex_or
+
+OP3 —> lex_eq | lex_gr | lex_less | lex_ge | lex_le | lex_ne
